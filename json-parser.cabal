@@ -28,6 +28,8 @@ library
   import: shared-properties
   exposed-modules:
       Lib
+    , Parser
+    , Primitives
   other-modules:
       Paths_json_parser
   hs-source-dirs:
@@ -47,11 +49,13 @@ executable json-parser-exe
 test-suite json-parser-test
   import: shared-properties
   type: exitcode-stdio-1.0
-  main-is: Spec.hs
+  main-is: Tests.hs
   other-modules:
       Paths_json_parser
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-    json-parser
+      json-parser
+    , tasty ==1.2.3
+    , tasty-hunit ==0.10.*
