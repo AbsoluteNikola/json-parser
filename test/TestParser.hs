@@ -12,4 +12,4 @@ tests :: TestTree
 tests = testGroup "Test Parser" 
   [ testCase "id has no effect (1 functor law)" $
       runParser (id <$> charP 'x') "xy" @?= Just ("y", 'x') 
-  ] 
+  ]
