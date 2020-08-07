@@ -27,8 +27,7 @@ common shared-properties
 library
   import: shared-properties
   exposed-modules:
-      Lib
-    , Parser
+    Parser
     , Primitives
   other-modules:
       Paths_json_parser
