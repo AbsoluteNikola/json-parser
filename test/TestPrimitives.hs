@@ -1,4 +1,4 @@
-module TestPrimitives where
+module TestPrimitives (tests) where
 
 import Test.Tasty (testGroup, TestTree)
 import Test.Tasty.HUnit (testCase, (@?=))
@@ -7,6 +7,8 @@ import Primitives
 
 tests :: TestTree
 tests = testGroup "Test parser primitives" 
-  [ testCase "runParser (charP 'x') \"xy\" == Just (\"y\", 'x')" $ 
-       runParser (charP 'x') "xy" @?= Just ("y", 'x')
+  [ testCase "charP" $ 
+      runParser (charP 'x') "xy" @?= Just ("y", 'x')
+  , testCase "stringP" $
+      runParser (stringP "xy") "xyz" @?= Just ("z", "xy")
   ]

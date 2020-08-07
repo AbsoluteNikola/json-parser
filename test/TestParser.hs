@@ -1,4 +1,6 @@
-module TestParser where
+module TestParser (tests) where
+
+import Control.Applicative((<|>))
 
 import Test.Tasty (testGroup, TestTree)
 import Test.Tasty.HUnit (testCase, (@?=))
@@ -9,6 +11,7 @@ tests :: TestTree
 tests = testGroup "Test Parser" 
   [ testFunctor
   , testApplicative
+  , testAlternative
   ]
 
 -- test this law
@@ -22,6 +25,16 @@ testFunctor = testGroup "Test Functor"
   
 testApplicative :: TestTree
 testApplicative = testGroup "Test Applicative"
-  [ testCase "pair from two parsers" $
+  [ testCase "pair from two parsers (ok)" $
       runParser ((,) <$> charP 'x' <*> charP 'y') "xy" @?= Just ("", ('x', 'y'))
+  , testCase "pair from two parsers (fail)" $
+      runParser ((,) <$> charP 'x' <*> charP 'y') "zy" @?= Nothing
+  ]
+
+testAlternative :: TestTree
+testAlternative = testGroup "Test Alternative"
+  [ testCase "'x' or 'y' from \"xy\"" $
+      runParser (charP 'x' <|> charP 'y') "xy" @?= Just ("y", 'x')
+  , testCase "'x' or 'y' from \"zx\"" $
+      runParser (charP 'x' <|> charP 'y') "zx" @?= Nothing
   ]
