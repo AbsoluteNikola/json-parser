@@ -7,3 +7,6 @@ charP c = Parser f
   where
     f [] = Nothing
     f (x:xs) = if x == c then Just (xs, x) else Nothing
+
+stringP :: String -> Parser String
+stringP = traverse charP
