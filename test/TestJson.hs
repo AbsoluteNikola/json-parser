@@ -17,12 +17,20 @@ tests = testGroup "Test Parser"
 
 testNull :: TestTree
 testNull = testGroup "test Null"
-  [
+  [ testCase "ok" $
+      runParser jsonNullP "null" @?= Just ("", JsonNull)
+  , testCase "fail" $
+      runParser jsonNullP "nulable" @?= Nothing
   ]
 
 testBool :: TestTree
 testBool = testGroup "test Bool"
-   [
+   [ testCase "true" $
+       runParser jsonBoolP "true" @?= Just ("", JsonBool True)
+   ,  testCase "false" $
+       runParser jsonBoolP "false" @?= Just ("", JsonBool False)
+   ,  testCase "fail" $
+       runParser jsonBoolP "Fail" @?= Nothing
    ]
 
 testString :: TestTree

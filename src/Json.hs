@@ -11,6 +11,7 @@ data Json = JsonNull
   | JsonNumber Double
   | JsonArray [Json]
   | JsonObject [(String, Json)]
+  deriving (Show, Eq)
   
 jsonNullP :: Parser Json
 jsonNullP = JsonNull <$ stringP "null"
