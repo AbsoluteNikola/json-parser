@@ -6,7 +6,7 @@ import Parser (runParser)
 import Json
 
 tests :: TestTree
-tests = testGroup "Test Parser"
+tests = testGroup "Json"
   [ testNull
   , testBool
   , testNumber
@@ -16,7 +16,7 @@ tests = testGroup "Test Parser"
   ]
 
 testNull :: TestTree
-testNull = testGroup "test Null"
+testNull = testGroup "Null"
   [ testCase "ok" $
       runParser jsonNullP "null" @?= Just ("", JsonNull)
   , testCase "fail" $
@@ -24,7 +24,7 @@ testNull = testGroup "test Null"
   ]
 
 testBool :: TestTree
-testBool = testGroup "test Bool"
+testBool = testGroup "Bool"
    [ testCase "true" $
        runParser jsonBoolP "true" @?= Just ("", JsonBool True)
    ,  testCase "false" $
@@ -34,22 +34,22 @@ testBool = testGroup "test Bool"
    ]
 
 testString :: TestTree
-testString = testGroup "test String"
+testString = testGroup "String"
   [
   ]
 
 testNumber :: TestTree
-testNumber = testGroup "test Number"
+testNumber = testGroup "Number"
   [
   ]
 
 testArray :: TestTree
-testArray = testGroup "test Array"
+testArray = testGroup "Array"
   [
   ]
 
 testObject :: TestTree
-testObject = testGroup "test Object"
+testObject = testGroup "Object"
   [
   ]
 

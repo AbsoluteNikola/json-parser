@@ -6,7 +6,7 @@ import Parser (runParser)
 import Primitives
 
 tests :: TestTree
-tests = testGroup "Test parser primitives" 
+tests = testGroup "Primitives" 
   [ testCase "charP" $ 
       runParser (charP 'x') "xy" @?= Just ("y", 'x')
   , testCase "stringP" $

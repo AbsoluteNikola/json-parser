@@ -8,7 +8,7 @@ import Parser (runParser)
 import Primitives (charP)
 
 tests :: TestTree
-tests = testGroup "Test Parser" 
+tests = testGroup "Parser" 
   [ testFunctor
   , testApplicative
   , testAlternative
@@ -18,13 +18,13 @@ tests = testGroup "Test Parser"
 {-# ANN testFunctor "HLint: ignore Functor law" #-}
 
 testFunctor :: TestTree
-testFunctor = testGroup "Test Functor"
+testFunctor = testGroup "Functor"
   [ testCase "id has no effect (1 functor law)" $
       runParser (id <$> charP 'x') "xy" @?= Just ("y", 'x')
   ]
   
 testApplicative :: TestTree
-testApplicative = testGroup "Test Applicative"
+testApplicative = testGroup "Applicative"
   [ testCase "pair from two parsers (ok)" $
       runParser ((,) <$> charP 'x' <*> charP 'y') "xy" @?= Just ("", ('x', 'y'))
   , testCase "pair from two parsers (fail)" $
@@ -32,7 +32,7 @@ testApplicative = testGroup "Test Applicative"
   ]
 
 testAlternative :: TestTree
-testAlternative = testGroup "Test Alternative"
+testAlternative = testGroup "Alternative"
   [ testCase "'x' or 'y' from \"xy\"" $
       runParser (charP 'x' <|> charP 'y') "xy" @?= Just ("y", 'x')
   , testCase "'x' or 'y' from \"zx\"" $
