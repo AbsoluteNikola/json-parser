@@ -1,7 +1,7 @@
 module Json where
 
 data Json = JsonNull
-  | JsonBool Bool 
+  | JsonBool Bool
   | JsonString String
   | JsonNumber Double
   | JsonArray [Json]

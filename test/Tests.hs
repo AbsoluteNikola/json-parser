@@ -1,6 +1,7 @@
 import Test.Tasty (TestTree, testGroup, defaultMain)
 import qualified TestPrimitives
 import qualified TestParser
+import qualified TestJson
 
 main :: IO ()
 main = defaultMain tests
@@ -8,6 +9,7 @@ main = defaultMain tests
 tests :: TestTree
 tests = testGroup "Tests" 
   [ TestParser.tests
-  , TestPrimitives.tests 
+  , TestPrimitives.tests
+  , TestJson.tests
   ]
   

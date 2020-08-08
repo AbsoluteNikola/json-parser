@@ -29,6 +29,7 @@ library
   exposed-modules:
     Parser
     , Primitives
+    , Json
   other-modules:
       Paths_json_parser
   hs-source-dirs:
