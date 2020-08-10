@@ -33,19 +33,19 @@ jsonNumberP = JsonNumber <$> (
                        <*> (floatP <|> pure 0)
                        <*> (expP <|> pure 0))
   where
-    digit = parseIf isDigit
+    digitP = parseIf isDigit
     signP = ((-1) <$ charP '-') <|> pure 1
     -- | 0. or 1012.
     intP :: Parser Double
     intP = (read <$> stringP "0") <|> (read <$> intP')
-    intP' = (:) <$> parseIf (`elem` ['1'..'9']) <*> many digit
+    intP' = (:) <$> parseIf (`elem` ['1'..'9']) <*> many digitP
     -- | parse .123 into Double or return 0
     floatP :: Parser Double
     floatP = (charP '.' *> floatP') <|> pure 0
-    floatP' = read . ("0."++) <$> some digit
+    floatP' = read . ("0."++) <$> some digitP
     expP = expHelper <$ (charP 'e' <|> charP 'E')
-                     <*> (((-1) <$ charP '-') <|> pure 1)
-                     <*> some digit
+                     <*> (((-1) <$ charP '-') <|> (1 <$ charP '+') <|> pure 1)
+                     <*> some digitP
     expHelper :: Double -> String -> Double
     expHelper sign number = sign * read number
     toDouble :: Double -> Double -> Double -> Double -> Double

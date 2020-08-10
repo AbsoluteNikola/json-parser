@@ -55,8 +55,8 @@ testNumber = testGroup "Number"
       runParser jsonNumberP "-123." @?= Just(".", JsonNumber (-123.0))
   ,  testCase "-123.1e1" $
       runParser jsonNumberP "-123.1e1" @?= Just("", JsonNumber (-1231))
-  , testCase "5e+1" $
-      runParser jsonNumberP "5e+1" @?= Just("", JsonNumber 50)
+  , testCase "5E+1" $
+      runParser jsonNumberP "5E+1" @?= Just("", JsonNumber 50)
   , testCase "-5e-1" $
       runParser jsonNumberP "-5e-1" @?= Just("", JsonNumber (-0.5))
   , testCase "-5.5e-1" $
@@ -72,7 +72,7 @@ testObject :: TestTree
 testObject = testGroup "Object"
   [
   ]
-  
+
 testOther :: TestTree
 testOther = testGroup "Other"
   [ testCase "whitespace" $
