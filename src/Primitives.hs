@@ -1,6 +1,7 @@
 module Primitives where
 
 import Control.Applicative (many)
+import Data.Char (isDigit)
 
 import Parser (Parser(..))
 
@@ -9,6 +10,9 @@ charP c = Parser f
   where
     f [] = Nothing
     f (x:xs) = if x == c then Just (xs, x) else Nothing
+
+digitP :: Parser Char
+digitP = parseIf isDigit
 
 stringP :: String -> Parser String
 stringP = traverse charP
