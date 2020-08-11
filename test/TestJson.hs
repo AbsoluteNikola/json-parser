@@ -36,7 +36,12 @@ testBool = testGroup "Bool"
 
 testString :: TestTree
 testString = testGroup "String"
-  [
+  [ testCase "\"true\"" $
+      runParser jsonStringP "\"true\"" @?= Just ("", "true")
+  , testCase "empty" $
+      runParser jsonStringP "\"\"" @?= Just ("", "")
+  , testCase "1" $
+      runParser jsonStringP "\"1\"" @?= Just ("", "1")
   ]
 
 testNumber :: TestTree
@@ -65,12 +70,22 @@ testNumber = testGroup "Number"
 
 testArray :: TestTree
 testArray = testGroup "Array"
-  [
+  [ testCase "[1, 2, 3.9]" $
+      runParser jsonArrayP "[1, 2, 3.9]" @?= Just("", JsonArray [JsonNumber 1, JsonNumber 2, JsonNumber 3.9])
+  , testCase "[1]" $
+      runParser jsonArrayP "[1]" @?= Just("", JsonArray [JsonNumber 1])
+  , testCase "[]" $
+      runParser jsonArrayP "[]" @?= Just("", JsonArray [])
   ]
 
 testObject :: TestTree
 testObject = testGroup "Object"
-  [
+  [ testCase "{1: 1, 2: 2}" $
+      runParser jsonObjectP "{\"1\":1,\"2\":2}" @?= Just("", JsonObject [("1", JsonNumber 1), ("2", JsonNumber 2)])
+  , testCase "{1: 1}" $
+      runParser jsonObjectP "{\"1\":1  }" @?= Just("", JsonObject [("1", JsonNumber 1)])
+  , testCase "{}" $
+      runParser jsonObjectP "{}" @?= Just("", JsonObject [])
   ]
 
 testOther :: TestTree

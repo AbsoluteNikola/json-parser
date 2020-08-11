@@ -77,12 +77,12 @@ escapeP = do
       , ('t', '\t')
       ]
 
-jsonStringP :: Parser Json
+jsonStringP :: Parser String
 jsonStringP = do
   _ <- charP '"'
-  str <- many (escapeP <|> anyCharP)
+  str <- many (escapeP <|> parseIf (/= '"'))
   _ <- charP '"'
-  pure $ JsonString str
+  pure str
 
 jsonValueP :: Parser Json
 jsonValueP = do
@@ -99,8 +99,29 @@ jsonArrayP = do
   _ <- charP ']'
   pure $ JsonArray values
 
+jsonObjectP :: Parser Json
+jsonObjectP = do
+  _ <- charP '{'
+  _ <- wsP
+  values <- sepBy pairP (charP ',')
+  _ <- charP '}'
+  pure $ JsonObject values
+  where
+    pairP = do
+      _ <- wsP
+      key <- jsonStringP
+      _ <- wsP
+      _ <- charP ':'
+      value <- jsonValueP
+      pure (key, value)
+
 jsonP :: Parser Json
-jsonP = jsonNullP <|> jsonBoolP <|> jsonNumberP <|> jsonStringP
+jsonP = jsonNullP
+  <|> jsonBoolP
+  <|> jsonNumberP
+  <|> (JsonString <$> jsonStringP)
+  <|> jsonArrayP
+  <|> jsonObjectP
 
 parseJson :: String -> Maybe Json
 parseJson input =

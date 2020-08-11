@@ -1,7 +1,6 @@
-module Parser (Parser(..)) where
+module Parser (Parser(..), get) where
 
 import Control.Applicative (Alternative(..))
-import Control.Monad (MonadFail)
 
 newtype Parser a = Parser { runParser :: String -> Maybe (String, a) }
 
@@ -40,3 +39,9 @@ instance Monad Parser where
         
 instance MonadFail Parser where
   fail _ = Parser $ const Nothing
+  
+  
+get :: Parser String
+get = Parser func
+  where
+    func s = Just (s, s)
