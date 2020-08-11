@@ -25,3 +25,6 @@ parseIf p = Parser func
 
 spanP :: (Char -> Bool) -> Parser String
 spanP =  many . parseIf
+
+anyCharP :: Parser Char
+anyCharP = parseIf $ const True

@@ -22,11 +22,10 @@ jsonNullP :: Parser Json
 jsonNullP = JsonNull <$ stringP "null"
 
 jsonBoolP :: Parser Json
-jsonBoolP = helper <$> (stringP "true" <|> stringP "false")
+jsonBoolP = trueP <|> falseP
   where
-    helper "true" = JsonBool True
-    helper _ = JsonBool False
-    -- helper will never be called without "true" or "false"
+    trueP = stringP "true" >> pure (JsonBool True)
+    falseP = stringP "false" >> pure (JsonBool False)
 
 
 intP :: Parser Double
@@ -35,7 +34,7 @@ intP = (read <$> stringP "0") <|> (read <$> intPart)
     intPart = (:) <$> parseIf (`elem` ['1'..'9']) <*> many digitP
 
 floatP :: Parser Double
-floatP = (charP '.' *> floatingPart) <|> pure 0
+floatP = charP '.' *> floatingPart
   where
     floatingPart = read . ("0."++) <$> some digitP
 
@@ -62,28 +61,31 @@ jsonNumberP =
 
 
 escapeP :: Parser Char
-escapeP = charP '\\' *> (unescape <$> parseIf (const True))
+escapeP = do
+  _ <- charP '\\'
+  c <- anyCharP
+  maybe (fail "") pure (lookup c escapeCharacters)
   where
-    unescape c =
-      case c of
-        '"' -> '"'
-        '\\' -> '\\'
-        '/' -> '/'
-        'b' -> '\b'
-        'f' -> '\f'
-        'n' -> '\n'
-        'r' -> '\r'
-        't' -> '\t'
-        c'   -> c'
-
+    escapeCharacters =
+      [ ('"', '"')
+      , ('\\', '\\')
+      , ('/', '/')
+      , ('b', '\b')
+      , ('f', '\f')
+      , ('n', '\n')
+      , ('r', '\r')
+      , ('t', '\t')
+      ]
 
 jsonStringP :: Parser Json
-jsonStringP = charP '"' *>  (JsonString <$> many character) <* charP '"'
-  where
-    character = undefined
+jsonStringP = do
+  _ <- charP '"'
+  str <- many (escapeP <|> anyCharP)
+  _ <- charP '"'
+  pure $ JsonString str
 
 jsonP :: Parser Json
-jsonP = jsonNullP <|> jsonBoolP <|> jsonNumberP
+jsonP = jsonNullP <|> jsonBoolP <|> jsonNumberP <|> jsonStringP
 
 parseJson :: String -> Maybe Json
 parseJson input =
