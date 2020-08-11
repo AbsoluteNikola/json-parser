@@ -1,6 +1,7 @@
 module Parser (Parser(..)) where
 
 import Control.Applicative (Alternative(..))
+import Control.Monad (MonadFail)
 
 newtype Parser a = Parser { runParser :: String -> Maybe (String, a) }
 
@@ -36,3 +37,6 @@ instance Monad Parser where
         (s', x) <- runParser m s
         (s'', y) <- runParser (k x) s'
         pure (s'', y)
+        
+instance MonadFail Parser where
+  fail _ = Parser $ const Nothing
