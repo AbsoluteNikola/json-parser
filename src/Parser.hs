@@ -17,16 +17,22 @@ instance Applicative Parser where
   pure x = Parser $ \s -> Just (s, x)
   pf <*> p = Parser func
     where
-      func s =
-        case runParser pf s of
-          Nothing -> Nothing
-          Just (s', f) ->
-            case runParser p s' of
-              Nothing -> Nothing
-              Just (s'', x) -> Just (s'', f x)
+      func s = do
+        (s', f) <- runParser pf s
+        (s'', x) <- runParser p s'
+        pure (s'', f x)
 
 instance Alternative Parser where
   empty = Parser $ const Nothing
   p1 <|> p2 = Parser func
     where 
       func s = runParser p1 s <|> runParser p2 s
+      
+instance Monad Parser where
+  return = pure
+  m >>= k = Parser func
+    where
+      func s = do
+        (s', x) <- runParser m s
+        (s'', y) <- runParser (k x) s'
+        pure (s'', y)

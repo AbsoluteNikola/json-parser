@@ -6,7 +6,7 @@ import Data.Char (isSpace)
 import Parser (Parser, runParser)
 import Primitives
 
-data Json 
+data Json
   = JsonNull
   | JsonBool Bool
   | JsonString String
@@ -40,8 +40,8 @@ floatP = (charP '.' *> floatingPart) <|> pure 0
     floatingPart = read . ("0."++) <$> some digitP
 
 expP :: Parser Double
-expP = 
-  applySign 
+expP =
+  applySign
     <$ (charP 'e' <|> charP 'E')
     <*> (((-1) <$ charP '-') <|> (1 <$ charP '+') <|> pure 1)
     <*> (read <$> some digitP)
@@ -49,10 +49,10 @@ expP =
     applySign sign number = sign * number
 
 jsonNumberP :: Parser Json
-jsonNumberP = 
+jsonNumberP =
   fmap JsonNumber $
-    toDouble 
-       <$> signP 
+    toDouble
+       <$> signP
        <*> intP
        <*> (floatP <|> pure 0)
        <*> (expP <|> pure 0)
@@ -60,6 +60,27 @@ jsonNumberP =
     signP = ((-1) <$ charP '-') <|> pure 1
     toDouble numSign int float e = numSign * (int + float) * (10 ** e)
 
+
+escapeP :: Parser Char
+escapeP = charP '\\' *> (unescape <$> parseIf (const True))
+  where
+    unescape c =
+      case c of
+        '"' -> '"'
+        '\\' -> '\\'
+        '/' -> '/'
+        'b' -> '\b'
+        'f' -> '\f'
+        'n' -> '\n'
+        'r' -> '\r'
+        't' -> '\t'
+        c'   -> c'
+
+
+jsonStringP :: Parser Json
+jsonStringP = charP '"' *>  (JsonString <$> many character) <* charP '"'
+  where
+    character = undefined
 
 jsonP :: Parser Json
 jsonP = jsonNullP <|> jsonBoolP <|> jsonNumberP
