@@ -1,6 +1,6 @@
 module Primitives where
 
-import Control.Applicative (many)
+import Control.Applicative (many, (<|>))
 import Data.Char (isDigit)
 
 import Parser (Parser(..))
@@ -28,3 +28,13 @@ spanP =  many . parseIf
 
 anyCharP :: Parser Char
 anyCharP = parseIf $ const True
+
+sepBy :: Parser a -> Parser b -> Parser [a]
+sepBy p sep = sepBy1 p sep <|> pure []
+ 
+sepBy1 :: Parser a -> Parser b -> Parser [a]
+sepBy1 p sep = do
+  x <- p
+  xs <- many (sep >> p)
+  pure (x:xs)
+  

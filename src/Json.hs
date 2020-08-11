@@ -84,6 +84,21 @@ jsonStringP = do
   _ <- charP '"'
   pure $ JsonString str
 
+jsonValueP :: Parser Json
+jsonValueP = do
+  _ <- wsP
+  res <- jsonP
+  _ <- wsP
+  pure res
+
+jsonArrayP :: Parser Json
+jsonArrayP = do
+  _ <- charP '['
+  _ <- wsP
+  values <- sepBy jsonValueP (charP ',')
+  _ <- charP ']'
+  pure $ JsonArray values
+
 jsonP :: Parser Json
 jsonP = jsonNullP <|> jsonBoolP <|> jsonNumberP <|> jsonStringP
 
