@@ -76,6 +76,8 @@ testArray = testGroup "Array"
       runParser jsonArrayP "[1]" @?= Just("", JsonArray [JsonNumber 1])
   , testCase "[]" $
       runParser jsonArrayP "[]" @?= Just("", JsonArray [])
+  , testCase "[\"hey\"  ,  123]" $
+      runParser jsonArrayP "[\"hey\"  ,  123]" @?= Just("", JsonArray [JsonString "hey", JsonNumber 123])
   ]
 
 testObject :: TestTree
@@ -86,6 +88,10 @@ testObject = testGroup "Object"
       runParser jsonObjectP "{\"1\":1  }" @?= Just("", JsonObject [("1", JsonNumber 1)])
   , testCase "{}" $
       runParser jsonObjectP "{}" @?= Just("", JsonObject [])
+  , testCase "{\"1\":[1, 2, 3, 4]}" $
+      runParser jsonObjectP "{\"1\":[1, 2, 3, 4]}" @?=
+        Just("", JsonObject [
+          ("1", JsonArray [JsonNumber 1, JsonNumber 2, JsonNumber 3, JsonNumber 4])])
   ]
 
 testOther :: TestTree
