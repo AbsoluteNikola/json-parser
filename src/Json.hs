@@ -21,11 +21,11 @@ wsP = spanP isSpace
 jsonNullP :: Parser Json
 jsonNullP = JsonNull <$ stringP "null"
 
-jsonBoolP :: Parser Json
+jsonBoolP :: Parser Bool
 jsonBoolP = trueP <|> falseP
   where
-    trueP = stringP "true" >> pure (JsonBool True)
-    falseP = stringP "false" >> pure (JsonBool False)
+    trueP = stringP "true" >> pure True
+    falseP = stringP "false" >> pure False
 
 
 intP :: Parser Double
@@ -47,14 +47,13 @@ expP =
   where
     applySign sign number = sign * number
 
-jsonNumberP :: Parser Json
+jsonNumberP :: Parser Double
 jsonNumberP =
-  fmap JsonNumber $
-    toDouble
-       <$> signP
-       <*> intP
-       <*> (floatP <|> pure 0)
-       <*> (expP <|> pure 0)
+  toDouble
+    <$> signP
+    <*> intP
+    <*> (floatP <|> pure 0)
+    <*> (expP <|> pure 0)
   where
     signP = ((-1) <$ charP '-') <|> pure 1
     toDouble numSign int float e = numSign * (int + float) * (10 ** e)
@@ -87,7 +86,12 @@ jsonStringP = do
 jsonValueP :: Parser Json
 jsonValueP = do
   _ <- wsP
-  res <- jsonP
+  res <- jsonNullP
+      <|> (JsonBool <$> jsonBoolP)
+      <|> (JsonNumber <$> jsonNumberP)
+      <|> (JsonString <$> jsonStringP)
+      <|> jsonArrayP
+      <|> jsonObjectP
   _ <- wsP
   pure res
 
@@ -115,16 +119,8 @@ jsonObjectP = do
       value <- jsonValueP
       pure (key, value)
 
-jsonP :: Parser Json
-jsonP = jsonNullP
-  <|> jsonBoolP
-  <|> jsonNumberP
-  <|> (JsonString <$> jsonStringP)
-  <|> jsonArrayP
-  <|> jsonObjectP
-
 parseJson :: String -> Maybe Json
 parseJson input =
-  case runParser jsonP input of
+  case runParser jsonValueP input of
     Nothing -> Nothing
     Just (_, result) -> Just result
