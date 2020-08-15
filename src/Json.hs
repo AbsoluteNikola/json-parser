@@ -13,7 +13,20 @@ data Json
   | JsonNumber Double
   | JsonArray [Json]
   | JsonObject [(String, Json)]
-  deriving (Show, Eq)
+  deriving (Eq)
+
+instance Show Json where
+  show JsonNull = "null"
+  show (JsonBool True) = "true"
+  show (JsonBool False) = "false"
+  show (JsonString s) = show s
+  show (JsonNumber x) = show x
+  show (JsonArray arr) = show arr
+  show (JsonObject pairs) = "{" ++ showPairs pairs ++ "}"
+    where
+      showPairs [] = ""
+      showPairs xs = "," ++ showPair (head xs) ++ showPairs (tail xs)
+      showPair (key, value) = show key ++ ":" ++ show value
 
 wsP :: Parser String
 wsP = spanP isSpace
