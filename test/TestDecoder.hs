@@ -5,6 +5,30 @@ import Test.Tasty.HUnit (testCase, (@?=))
 import Decoder
 import Json (Json(..))
 
+-- in memory of Alekseev Alexandr (he's still alive, don't worry)
+sample :: Json
+sample = JsonObject
+  [ ("author", JsonObject 
+      [ ("name", JsonString "Alexandr")
+      , ("surname", JsonString "Alekseev")
+      ]
+    )
+  , ("name", JsonString "как выжить в долгопрудном. Честный гайд")
+  , ("year", JsonNumber 2019)
+  , ("chapters", JsonArray 
+      [ JsonString "Вступление"
+      , JsonString "1. Принятие"
+      , JsonString "2. Прибытиые"
+      , JsonString "3. Принятие"
+      , JsonString "4. Как победить тараканов в общаге"
+      , JsonString "5. Считаем степуху в шавермах"
+      , JsonString "6. Путешествие до набережной и обратно"
+      , JsonString "7. Как правильно писать псж"
+      ]
+    )
+  ]
+
+
 tests :: TestTree
 tests = testGroup "Decoder"
   [ testNull
@@ -18,7 +42,8 @@ tests = testGroup "Decoder"
 
 testNull :: TestTree
 testNull = testGroup "Null"
-  []
+  [ 
+  ]
 
 testBool :: TestTree
 testBool = testGroup "Bool"

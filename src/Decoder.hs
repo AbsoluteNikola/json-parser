@@ -25,7 +25,7 @@ instance Alternative Decoder where
   d1 <|> d2 = Decoder func
     where
       func json = runDecoder d1 json <|> runDecoder d2 json
-  
+
 
 instance Monad Decoder where
   (>>=) m k = Decoder $ \json -> do
@@ -35,10 +35,37 @@ instance Monad Decoder where
 instance MonadFail Decoder where
   fail _ = Decoder $ const Nothing
 
+
+null :: Decoder ()
+null = Decoder func
+  where
+    func JsonNull = Just ()
+    func _ = fail ""
+
 bool :: Decoder Bool
 bool = Decoder func
   where
     func (JsonBool b) = Just b
+    func _ = fail ""
+
+string :: Decoder String
+string = Decoder func
+  where
+    func (JsonString s) = Just s
+    func _ = fail ""
+
+double :: Decoder Double
+double = Decoder func
+  where
+    func (JsonNumber x) = Just x
+    func _ = fail ""
+
+list :: Decoder a -> Decoder [a]
+list d = Decoder $ \json -> do
+     arr <- runDecoder (Decoder func) json
+     traverse (runDecoder d) arr
+  where
+    func (JsonArray arr) = Just arr
     func _ = fail ""
 
 field :: String -> Decoder a -> Decoder a
