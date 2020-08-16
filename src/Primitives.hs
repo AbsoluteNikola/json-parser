@@ -2,29 +2,32 @@ module Primitives where
 
 import Control.Applicative (many, (<|>))
 import Data.Char (isDigit)
+import Data.Text as T
 
 import Parser (Parser(..))
 
 charP :: Char -> Parser Char
 charP c = Parser f
   where
-    f [] = Nothing
-    f (x:xs) = if x == c then Just (xs, x) else Nothing
+    f s = case T.uncons s of
+      Nothing -> Nothing
+      Just (x, xs) -> if x == c then Just (xs, x) else Nothing
 
 digitP :: Parser Char
 digitP = parseIf isDigit
 
-stringP :: String -> Parser String
-stringP = traverse charP
+stringP :: T.Text -> Parser T.Text
+stringP s = T.pack <$> traverse charP (T.unpack s)
 
 parseIf :: (Char -> Bool) -> Parser Char
 parseIf p = Parser func
   where
-    func [] = Nothing
-    func (x:xs) = if p x then Just (xs, x) else Nothing
+    func s = case T.uncons s of
+      Nothing -> Nothing
+      Just (x, xs) -> if p x then Just (xs, x) else Nothing
 
-spanP :: (Char -> Bool) -> Parser String
-spanP =  many . parseIf
+spanP :: (Char -> Bool) -> Parser T.Text
+spanP p =  T.pack <$> many (parseIf p)
 
 anyCharP :: Parser Char
 anyCharP = parseIf $ const True

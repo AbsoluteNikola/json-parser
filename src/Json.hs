@@ -2,6 +2,7 @@ module Json where
 
 import Control.Applicative ((<|>), many, some)
 import Data.Char (isSpace)
+import qualified Data.Text as T
 
 import Parser (Parser, runParser)
 import Primitives
@@ -9,12 +10,13 @@ import Primitives
 data Json
   = JsonNull
   | JsonBool Bool
-  | JsonString String
+  | JsonString T.Text
   | JsonNumber Double
   | JsonArray [Json]
-  | JsonObject [(String, Json)]
+  | JsonObject [(T.Text, Json)]
   deriving (Eq)
 
+-- FIXME
 instance Show Json where
   show JsonNull = "null"
   show (JsonBool True) = "true"
@@ -28,7 +30,7 @@ instance Show Json where
       showPairs xs = "," ++ showPair (head xs) ++ showPairs (tail xs)
       showPair (key, value) = show key ++ ":" ++ show value
 
-wsP :: Parser String
+wsP :: Parser T.Text
 wsP = spanP isSpace
 
 jsonNullP :: Parser Json
@@ -42,7 +44,7 @@ jsonBoolP = trueP <|> falseP
 
 
 intP :: Parser Double
-intP = (read <$> stringP "0") <|> (read <$> intPart)
+intP = (read . T.unpack <$> stringP "0") <|> (read <$> intPart)
   where
     intPart = (:) <$> parseIf (`elem` ['1'..'9']) <*> many digitP
 
@@ -89,10 +91,10 @@ escapeP = do
       , ('t', '\t')
       ]
 
-jsonStringP :: Parser String
+jsonStringP :: Parser T.Text
 jsonStringP = do
   _ <- charP '"'
-  str <- many (escapeP <|> parseIf (/= '"'))
+  str <- T.pack <$> many (escapeP <|> parseIf (/= '"'))
   _ <- charP '"'
   pure str
 
@@ -132,7 +134,7 @@ jsonObjectP = do
       value <- jsonValueP
       pure (key, value)
 
-parseJson :: String -> Maybe Json
+parseJson :: T.Text -> Maybe Json
 parseJson input =
   case runParser jsonValueP input of
     Nothing -> Nothing

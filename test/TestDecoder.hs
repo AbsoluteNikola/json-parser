@@ -1,18 +1,20 @@
 module TestDecoder where
 
+import qualified Data.Text as T
+
 import Test.Tasty (testGroup, TestTree)
 import Test.Tasty.HUnit (testCase, (@?=))
 import Decoder
 import Json (Json(..))
 
-data Author = Author { name' :: String, surname :: String } deriving (Eq, Show)
+data Author = Author { name' :: T.Text, surname :: T.Text } deriving (Eq, Show)
 
 -- support for Integers will be added in nearest future
 data Book = Book
   { author :: Author
-  , name :: String
+  , name :: T.Text
   , year :: Double
-  , chapters :: [String]
+  , chapters :: [T.Text]
   } deriving (Eq, Show)
 
 

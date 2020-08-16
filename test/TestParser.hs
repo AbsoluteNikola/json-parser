@@ -15,7 +15,7 @@ tests = testGroup "Parser"
   ]
 
 -- test this law
-{-# ANN testFunctor "HLint: ignore Functor law" #-}
+{-# ANN testFunctor ("HLint: ignore Functor law" :: String) #-}
 
 testFunctor :: TestTree
 testFunctor = testGroup "Functor"

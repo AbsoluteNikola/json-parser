@@ -1,6 +1,7 @@
 module Decoder where
 
 import Control.Applicative (Alternative, (<|>), empty)
+import qualified Data.Text as T
 
 import Json (Json(..))
 
@@ -48,7 +49,7 @@ bool = Decoder func
     func (JsonBool b) = Just b
     func _ = fail ""
 
-string :: Decoder String
+string :: Decoder T.Text
 string = Decoder func
   where
     func (JsonString s) = Just s
@@ -68,7 +69,7 @@ list d = Decoder $ \json -> do
     func (JsonArray arr) = Just arr
     func _ = fail ""
 
-field :: String -> Decoder a -> Decoder a
+field :: T.Text -> Decoder a -> Decoder a
 field key d = Decoder $ \json -> do
   inner <- runDecoder (Decoder func) json
   runDecoder d inner

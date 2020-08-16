@@ -1,8 +1,9 @@
 module Parser (Parser(..), get) where
 
 import Control.Applicative (Alternative(..))
+import qualified Data.Text as T
 
-newtype Parser a = Parser { runParser :: String -> Maybe (String, a) }
+newtype Parser a = Parser { runParser :: T.Text -> Maybe (T.Text, a) }
 
 instance Functor Parser where
 --fmap :: (a -> b) -> Parser a -> Parser b
@@ -41,7 +42,7 @@ instance MonadFail Parser where
   fail _ = Parser $ const Nothing
   
   
-get :: Parser String
+get :: Parser T.Text
 get = Parser func
   where
     func s = Just (s, s)
