@@ -36,7 +36,7 @@ library
     Decoder
   other-modules:
   hs-source-dirs:
-      src
+      lib
 
 test-suite json-parser-test
   import: shared-properties
