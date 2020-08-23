@@ -36,6 +36,8 @@ library
   other-modules:
     Parser.Base
     Parser.Combinators
+    Json.Base
+    Json.Parser
   hs-source-dirs:
       lib
 
