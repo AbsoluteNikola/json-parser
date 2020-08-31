@@ -31,10 +31,13 @@ library
   import: shared-properties
   exposed-modules:
     Parser
-    Primitives
     Json
     Decoder
   other-modules:
+    Parser.Base
+    Parser.Combinators
+    Json.Base
+    Json.Parser
   hs-source-dirs:
       lib
 

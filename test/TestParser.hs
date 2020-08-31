@@ -4,8 +4,7 @@ import Control.Applicative((<|>))
 
 import Test.Tasty (testGroup, TestTree)
 import Test.Tasty.HUnit (testCase, (@?=))
-import Parser (runParser)
-import Primitives (charP)
+import Parser (runParser, charP)
 
 tests :: TestTree
 tests = testGroup "Parser" 

@@ -4,8 +4,7 @@ import Data.Char (isDigit)
 
 import Test.Tasty (testGroup, TestTree)
 import Test.Tasty.HUnit (testCase, (@?=))
-import Parser (runParser)
-import Primitives
+import Parser
 
 tests :: TestTree
 tests = testGroup "Primitives"
@@ -13,12 +12,12 @@ tests = testGroup "Primitives"
       runParser (charP 'x') "xy" @?= Just ("y", 'x')
   , testCase "stringP" $
       runParser (stringP "xy") "xyz" @?= Just ("z", "xy")
-  , testCase "parseIf 1" $
-      runParser (parseIf isDigit) "123" @?= Just ("23", '1')
-  , testCase "parseIf 2" $
-      runParser (parseIf isDigit) "a123" @?= Nothing
-  , testCase "spanP (empty)" $
-      runParser (spanP isDigit) "a123" @?= Just ("a123", "")
-  , testCase "spanP (ok)" $
-      runParser (spanP isDigit) "123" @?= Just ("", "123")
+  , testCase "charIfP 1" $
+      runParser (charIfP isDigit) "123" @?= Just ("23", '1')
+  , testCase "charIfP 2" $
+      runParser (charIfP isDigit) "a123" @?= Nothing
+  , testCase "takeWhileP (empty)" $
+      runParser (takeWhileP isDigit) "a123" @?= Just ("a123", "")
+  , testCase "takeWhileP (ok)" $
+      runParser (takeWhileP isDigit) "123" @?= Just ("", "123")
   ]
