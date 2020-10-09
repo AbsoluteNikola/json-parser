@@ -1,5 +1,13 @@
-module Encoder where
+module Encoder (
+    string
+  , bool
+  , number
+  , null
+  , array
+  , object
+) where
 
+import Prelude hiding (null)
 import qualified Data.Text as T
 import Json.Base (Json(..))
 
@@ -9,8 +17,8 @@ string = JsonString
 bool :: Bool -> Json
 bool = JsonBool
 
-double :: Double -> Json
-double = JsonNumber
+number :: Double -> Json
+number = JsonNumber
 
 null :: Json
 null = JsonNull
