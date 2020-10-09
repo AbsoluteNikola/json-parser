@@ -33,6 +33,7 @@ library
     Parser
     Json
     Decoder
+    Encoder
   other-modules:
     Parser.Base
     Parser.Combinators
