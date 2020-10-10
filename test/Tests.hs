@@ -3,6 +3,7 @@ import qualified TestPrimitives
 import qualified TestParser
 import qualified TestJson
 import qualified TestDecoder
+import qualified TestEncoder
 
 main :: IO ()
 main = defaultMain tests
@@ -13,5 +14,6 @@ tests = testGroup "Tests"
   , TestPrimitives.tests
   , TestJson.tests
   , TestDecoder.tests
+  , TestEncoder.tests
   ]
   
