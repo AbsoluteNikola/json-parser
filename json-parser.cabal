@@ -22,6 +22,7 @@ common shared-properties
   build-depends:
       base == 4.*
     , text ==1.*
+    , template-haskell ==2.*
   default-extensions:
     OverloadedStrings
   ghc-options:
@@ -34,6 +35,7 @@ library
     Json
     Decoder
     Encoder
+    QQ
   other-modules:
     Parser.Base
     Parser.Combinators
@@ -52,6 +54,7 @@ test-suite json-parser-test
     , TestPrimitives
     , TestDecoder
     , TestEncoder
+    , TestQQ
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
