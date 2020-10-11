@@ -4,6 +4,7 @@ import qualified TestParser
 import qualified TestJson
 import qualified TestDecoder
 import qualified TestEncoder
+import qualified TestQQ
 
 main :: IO ()
 main = defaultMain tests
@@ -15,5 +16,6 @@ tests = testGroup "Tests"
   , TestJson.tests
   , TestDecoder.tests
   , TestEncoder.tests
+  , TestQQ.tests
   ]
   

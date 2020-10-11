@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE QuasiQuotes #-}
 
-module QQ -- (json)
+module QQ (json)
 where
 
 import Language.Haskell.TH.Quote (QuasiQuoter(..))
